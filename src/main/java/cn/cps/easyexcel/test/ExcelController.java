@@ -6,6 +6,7 @@ import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.ExcelWriter;
 import com.alibaba.excel.support.ExcelTypeEnum;
 import com.alibaba.excel.write.metadata.WriteSheet;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -101,7 +102,7 @@ public class ExcelController {
             long mergeBeginRowIndex = 7;
             long mergeEndRowIndex = mergeBeginRowIndex + getFillList().size();
 
-            String templatePath = this.getClass().getResource("/template/fill.xlsx").getPath();
+            ClassPathResource classPathResource = new ClassPathResource("/template/fill.xlsx");
 
             ExcelWriter excelWriter =
                     EasyExcel.write(new BufferedOutputStream(response.getOutputStream()))
@@ -110,7 +111,7 @@ public class ExcelController {
                             //是否自动关闭输入流
                             .autoCloseStream(Boolean.TRUE)
                             .registerWriteHandler(new CustomCellWriteHandler(mergeSheetIndex, mergeColumnIndex, mergeBeginRowIndex, mergeEndRowIndex))
-                            .withTemplate("D://fill.xlsx").build();
+                            .withTemplate(classPathResource.getInputStream()).build();
 //              // 自定义列宽度，有数字会
 //                .registerWriteHandler(new LongestMatchColumnWidthStyleStrategy())
             // 设置excel保护密码
